@@ -28,7 +28,7 @@
   },
   "scripts": {
     "lint": "eslint lib test",
-    "test": "tap test/*.js"
+    "test": "tap -t 120 test/*.js"
   },
   "dependencies": {
     "dateformat": "^3.0.3",

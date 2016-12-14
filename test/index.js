@@ -240,6 +240,43 @@ tap.test('should send IPC shutdown on Windows', function (t) {
   }
 });
 
+tap.test('should wait delay before restarting server', function (t) {
+  spawn('--delay=2 server.js', function (out) {
+    if (out.match(/touch message.js/)) {
+      var time1 = Date.now();
+      setTimeout(touchFile(), 500);
+      return function (out2) {
+        if (out2.match(/Restarting/)) {
+          var time2 = Date.now();
+          if ((time2 - time1) < 2000) {
+            t.fail("server must wait more than 2 seconds to restart");
+          }
+          return { exit: t.end.bind(t) };
+        }
+      };
+    }
+  });
+});
+
+tap.test('should refresh the delay on multiple edits', function (t) {
+  spawn('--delay=3 server.js', function (out) {
+    if (out.match(/touch message.js/)) {
+      var time1 = Date.now();
+      setTimeout(touchFile(), 500);
+      setTimeout(touchFile(), 2000);
+      return function (out2) {
+        if (out2.match(/Restarting/)) {
+          var time2 = Date.now();
+          if ((time2 - time1) < 5000) {
+            t.fail("server must wait more than 5 seconds to restart");
+          }
+          return { exit: t.end.bind(t) };
+        }
+      };
+    }
+  });
+});
+
 tap.test('should be resistant to breaking `require.extensions`', function (t) {
   spawn('modify-extensions.js', function (out) {
     t.notOk(/TypeError/.test(out));
