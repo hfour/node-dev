@@ -40,6 +40,7 @@ files are watched and what happens when they change:
 * `--respawn` Keep watching for changes after the script has exited
 * `--dedupe` [Dedupe dynamically](https://www.npmjs.org/package/dynamic-dedupe)
 * `--graceful_ipc <msg>` Send 'msg' as an IPC message instead of SIGTERM for restart/shutdown
+* `--delay=<seconds>` Delay restarting by seconds to allow multiple changes to queue.
 * `--poll` Force polling for file changes (Caution! CPU-heavy!)
 * `--no-notify` Switch off desktop notifications (see below)
 
@@ -84,6 +85,7 @@ options you can set to tweak its behaviour:
 * `deps` – How many levels of dependencies should be watched. _Default:_ `1`
 * `dedupe` – Whether modules should by [dynamically deduped](https://www.npmjs.org/package/dynamic-dedupe). _Default:_ `false`
 * `graceful_ipc` - Send the argument provided as an IPC message instead of SIGTERM during restart events.  _Default:_ `""` (off)
+* `delay` - Delays the restarting of the script for the configured amount of seconds.  _Default:_ 0
 
 Upon startup node-dev looks for a `.node-dev.json` file in the following directories:
 * user's HOME directory
@@ -164,6 +166,13 @@ process.on("message", function (msg) {
   }
 });
 ```
+
+### Restart Delay
+
+For the instances where a transpiler might make changes the multiple files in
+rapid succession, a delay can be configured.  If any new changes are detected
+during the delay, the delay will be reset.   The restart will occur when no changes
+happen during `cfg.delay` seconds.
 
 ### Ignore paths
 
