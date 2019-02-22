@@ -1,6 +1,6 @@
 {
   "name": "node-dev-delay",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "Restarts your app when files are modified; has delay support.",
   "keywords": [
     "restart",
